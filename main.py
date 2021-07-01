@@ -1,6 +1,3 @@
-import tkinter
-from tkinter import filedialog as fd
-
 from plyer import filechooser
 
 import PyPDF2
@@ -45,28 +42,32 @@ class PDFMergeApp(MDApp):
         return application_window
 
     def pressed(self, instance):
-        filename = filechooser.open_file(title="Choose pdfs to merge",
-                                         multiple=True,
-                                         filters=[("PDF Files (.pdf)", "*.pdf")])
-        pdfOutputFileDirectory = filechooser.choose_dir()
-        pdfOutputFileDirectory = ''.join(pdfOutputFileDirectory)
+        if (self.textInput.text == ""):
+            return None
+        else:
+            self.textInput.primary_hue = "Blue"
+            filename = filechooser.open_file(title="Choose pdfs to merge",
+                                             multiple=True,
+                                             filters=[("PDF Files (.pdf)", "*.pdf")])
+            pdfOutputFileDirectory = filechooser.choose_dir()
+            pdfOutputFileDirectory = ''.join(pdfOutputFileDirectory)
 
-        pdfOutputFileName = self.textInput.text
+            pdfOutputFileName = self.textInput.text
 
-        pdfOutputFile = open(pdfOutputFileDirectory + "\\" + pdfOutputFileName + ".pdf",
-                             "wb")  # fd.asksaveasfile(mode='wb', defaultextension=".pdf")
-        pdfWriter = PyPDF2.PdfFileWriter()
+            pdfOutputFile = open(pdfOutputFileDirectory + "\\" + pdfOutputFileName + ".pdf",
+                                 "wb")  # fd.asksaveasfile(mode='wb', defaultextension=".pdf")
+            pdfWriter = PyPDF2.PdfFileWriter()
 
-        for x in filename:
-            pdfFiles = open(x, "rb")
-            pdfReader = PyPDF2.PdfFileReader(pdfFiles)
-            for pageNum in range(pdfReader.numPages):
-                pageObj = pdfReader.getPage(pageNum)
-                pdfWriter.addPage(pageObj)
-                pdfWriter.write(pdfOutputFile)
+            for x in filename:
+                pdfFiles = open(x, "rb")
+                pdfReader = PyPDF2.PdfFileReader(pdfFiles)
+                for pageNum in range(pdfReader.numPages):
+                    pageObj = pdfReader.getPage(pageNum)
+                    pdfWriter.addPage(pageObj)
+                    pdfWriter.write(pdfOutputFile)
 
-        self.textInput.text = ""
-        pdfOutputFile.close()
+            self.textInput.text = ""
+            pdfOutputFile.close()
 
 
 PDFMergeApp().run()
